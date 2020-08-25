@@ -151,6 +151,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Array.cpp" />
     <ClCompile Include="Cell.cpp" />
     <ClCompile Include="ExcelProject.cpp" />
     <ClCompile Include="Stack.cpp" />
@@ -159,6 +160,7 @@
     <ClCompile Include="Vector.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Array.h" />
     <ClInclude Include="Cell.h" />
     <ClInclude Include="Stack.h" />
     <ClInclude Include="Table.h" />
