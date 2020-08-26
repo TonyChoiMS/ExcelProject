@@ -8,6 +8,7 @@
 #include "Stack.h"
 #include "Cell.h"
 #include "Table.h"
+#include <typeinfo>
 
 #ifndef UTILS_H
 #define UTILS_H
@@ -180,6 +181,25 @@ string StrCat(const String& s)
 	return string(s);
 }
 
+size_t GetStringSize(const char* s) { return strlen(s); }
+
+size_t GetStringSize(const string& s) { return s.size(); }
+
+template <typename String, typename... Strings>
+size_t GetStringSize(const String& s, Strings... strs)
+{
+	return GetStringSize(s) + GetStringSize(strs...);
+}
+
+void AppendToString(string* concat_str) { return; }
+
+template <typename String, typename... Strings>
+void AppendToString(string* concat_str, const String& s, Strings... strs)
+{
+	concat_str->append(s);
+	AppendToString(concat_str, strs...);
+}
+
 template <typename String, typename... Strings>
 string StrCat(const String& s, Strings... strs)
 {
@@ -198,24 +218,17 @@ string StrCat(const String& s, Strings... strs)
 	return concat_str;
 }
 
-void AppendToString(string* concat_str) { return; }
-
-template <typename String, typename... Strings>
-void AppendToString(string* concat_str, const String& s, Strings... strs) 
+template <int N>
+struct Int
 {
-	concat_str->append(s);
-	AppendToString(concat_str, strs...);
-}
+	static const int num = N;
+};
 
-size_t GetStringSize(const char* s) { return strlen(s); }
-
-size_t GetStringSize(const string& s) { return s.size(); }
-
-template <typename String, typename... Strings>
-size_t GetStringSize(const String& s, Strings... strs)
+template <typename T, typename U>
+struct Add
 {
-	return GetStringSize(s) + GetStringSize(strs...);
-}
+	typedef Int<T::num + U::num> result;
+};
 
 int main()
 {
@@ -225,4 +238,11 @@ int main()
 
 	string s = "hello", t = "world";
 	std::cout << "max (" << s << "," << t << ") ? : " << max(s, t) << std::endl;
+
+	typedef Int<1> one;
+	typedef Int<2> two;
+
+	typedef Add<one, two>::result three;
+
+	std::cout << "additional result : " << three::num << std::endl;
 }
