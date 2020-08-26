@@ -218,6 +218,7 @@ string StrCat(const String& s, Strings... strs)
 	return concat_str;
 }
 
+// 템플릿 타입을 객체처럼 사용
 template <int N>
 struct Int
 {
@@ -229,6 +230,28 @@ struct Add
 {
 	typedef Int<T::num + U::num> result;
 };
+
+// Factorial 템플릿으로 구현
+template <int N>
+struct Factorial
+{
+	static const int result = N * Factorial<N - 1>::result;
+};
+
+template<>
+struct Factorial<1>
+{
+	static const int result = 1;
+};
+
+// Factorial 일반 함수 구현
+int factorial(int n)
+{
+	if (n == 1) return 1;
+
+	return n * factorial(n - 1);
+}
+
 
 int main()
 {
@@ -245,4 +268,6 @@ int main()
 	typedef Add<one, two>::result three;
 
 	std::cout << "additional result : " << three::num << std::endl;
+
+	std::cout << " 6! = 1 * 2 * 3 * 4 * 5 * 6 = " << Factorial<6>::result << std::endl;
 }
