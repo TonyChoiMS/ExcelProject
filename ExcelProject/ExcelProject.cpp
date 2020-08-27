@@ -234,7 +234,7 @@ struct Add
 template <typename a, typename b>
 struct divide
 {
-	typedef INT<a::num / b::num> result;
+	typedef Int<a::num / b::num> result;
 };
 
 using one = Int<1>;
@@ -276,12 +276,6 @@ template <typename N>
 struct check_div<N, typename Divide<N, two>::result>
 {
 	static const bool result = (N::num % (N::num / 2) == 0);
-};
-
-template <typename N>
-struct _is_prime
-{
-	static const bool result = _is_prime<Int<N>>::result;
 };
 
 // Factorial 템플릿으로 구현
@@ -367,13 +361,76 @@ template <class R1, class R2>
 struct Ratio_muiltiply : _Ratio_multiply<R1, R2>::type {};
 
 template <class R1, class R2>
-struct Ratio_divide
+struct _Ratio_divide
 {
 	using type = Ratio<R1::num * R2::den, R1::den * R2::num>;
 };
 
 template <class R1, class R2>
 struct Ratio_divide : _Ratio_divide<R1, R2>::type {};
+
+template <typename U, typename V, typename W>
+struct Dim
+{
+	using M = U;
+	using L = V;
+	using T = W;
+
+	using type = Dim<M, L, T>;
+};
+
+template <typename U, typename V>
+struct add_dim_
+{
+	typedef Dim<typename Ratio_Add<typename U::M, typename V::M>::type,
+		typename Ratio_Add<typename U::L, typename U::L>::type,
+		typename Ratio_Add<typename U::T, typename V::T>::type>
+		type;
+};
+
+template <typename U, typename V>
+struct subtract_dim_
+{
+	typedef Dim<typename Ratio_subtract<typename U::M, typename V::M>::type,
+		typename Ratio_subtract<typename U::L, typename U::L>::type,
+		typename Ratio_subtract<typename U::T, typename V::T>::type>
+		type;
+};
+
+template <typename T, typename D>
+struct quantity
+{
+	T q;
+	using dim_type = D;
+
+	quantity operator+(quantity<T, D> quant) { return quantity<T, D>(q + quant.q); }
+	quantity operator-(quantity<T, D> quant) { return quantity<T, D>(q + quant.q); }
+
+	template <typename D2>
+	quantity<T, typename add_dim_<D, D2>::type> operator*(quantity<T, D2> quant)
+	{
+		return quantity<T, typename add_dim_<D, D2>::type>(q * quant.q);
+	}
+
+	template <typename D2>
+	quantity<T, typename subtract_dim_<D, D2>::type> operator/(
+		quantity<T, D2> quant) {
+		return quantity<T, typename subtract_dim_<D, D2>::type>(q / quant.q);
+	}
+
+	quantity<T, D> operator*(T scalar) { return quantity<T, D>(q * scalar); }
+	quantity<T, D> operator/(T scalar) { return quantity<T, D>(q / scalar); }
+
+	quantity(T q) : q(q) {}
+};
+
+template <typename T, typename D>
+std::ostream& operator<<(std::ostream& out, const quantity<T, D>& q)
+{
+	out << q.q << "kg^^" << D::M::num / D::M::den << "m^" << D::L::num / D::L::den << "s^" << D::T::num / D::T::den;
+	return out;
+}
+
 
 int main()
 {
@@ -404,4 +461,8 @@ int main()
 
 	typedef void(*func)(int, int);
 	using func = void(*)(int, int);
+
+	std::cout << "----------------------------------" << std::endl;
+
+	
 }
