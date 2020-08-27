@@ -277,9 +277,13 @@ struct GCD<X, 0>
 template <int N, int D = 1>
 struct Ratio
 {
-	typedef Ratio<N, D> type;
-	static const int num = N;
-	static const int den = D;
+private:
+	const static int _gcd = GCD<N, D>::value;
+
+public:
+	typedef Ratio<N / _gcd, D / _gcd> type;
+	static const int num = N / _gcd;
+	static const int den = D / _gcd;
 };
 
 template <class R1, class R2>
@@ -291,6 +295,32 @@ struct _Ratio_Add
 template <class R1, class R2>
 struct Ratio_Add : _Ratio_Add <R1, R2>::type{};
 
+template <class R1, class R2>
+struct _Ratio_subtract
+{
+	using type = Ratio<R1::num * R2::den - R2::num * R1::den, R1::den * R2::den>;
+};
+
+template <class R1, class R2>
+struct Ratio_subtract : _Ratio_subtract<R1, R2>::type {};
+
+template <class R1, class R2>
+struct _Ratio_multiply
+{
+	using type = Ratio<R1::num * R2::num, R1::den * R2::den>;
+};
+
+template <class R1, class R2>
+struct Ratio_muiltiply : _Ratio_multiply<R1, R2>::type {};
+
+template <class R1, class R2>
+struct Ratio_divide
+{
+	using type = Ratio<R1::num * R2::den, R1::den * R2::num>;
+};
+
+template <class R1, class R2>
+struct Ratio_divide : _Ratio_divide<R1, R2>::type {};
 
 int main()
 {
