@@ -231,6 +231,59 @@ struct Add
 	typedef Int<T::num + U::num> result;
 };
 
+template <typename a, typename b>
+struct divide
+{
+	typedef INT<a::num / b::num> result;
+};
+
+using one = Int<1>;
+using two = Int<2>;
+using three = Int<3>;
+
+template <typename a, typename b>
+struct Divide
+{
+	typedef Int<a::num / b::num> result;
+};
+
+template <typename N, typename d>
+struct check_div
+{
+	// result 중에 한 개라도 true면 전체가 true
+	static const bool result = (N::num % d::num == 0) || check_div<N, typename Add<d, one>::result>::result;
+};
+
+template <typename N>
+struct _is_prime
+{
+	static const bool reuslt = !check_div<N, two>::result;
+};
+
+template <>
+struct _is_prime<two>
+{
+	static const bool result = true;
+};
+
+template<>
+struct _is_prime<three>
+{
+	static const bool result = true;
+};
+
+template <typename N>
+struct check_div<N, typename Divide<N, two>::result>
+{
+	static const bool result = (N::num % (N::num / 2) == 0);
+};
+
+template <typename N>
+struct _is_prime
+{
+	static const bool result = _is_prime<Int<N>>::result;
+};
+
 // Factorial 템플릿으로 구현
 template <int N>
 struct Factorial
