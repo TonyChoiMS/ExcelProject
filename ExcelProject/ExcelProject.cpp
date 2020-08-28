@@ -9,6 +9,8 @@
 #include "Cell.h"
 #include "Table.h"
 #include <typeinfo>
+#include <vector>
+#include <list>
 
 #ifndef UTILS_H
 #define UTILS_H
@@ -431,6 +433,36 @@ std::ostream& operator<<(std::ostream& out, const quantity<T, D>& q)
 	return out;
 }
 
+template <typename T>
+void print_vector(std::vector<T>& vec)
+{
+	for (typename std::vector<T>::iterator itr = vec.begin(); itr != vec.end(); ++itr)
+	{
+		std::cout << *itr << std::endl;
+	}
+}
+
+template <typename T>
+void print_vector_range_based(std::vector<T>& vec)
+{
+	for (const auto& elem : vec)
+	{
+		std::cout << elem << std::endl;
+	}
+}
+
+template <typename T>
+void print_list(std::list<T>& lst)
+{
+	std::cout << "[ ";
+	for (const auto& elem : lst)
+	{
+		std::cout << elem << " ";
+	}
+
+	std::cout << "]" << std::endl;
+}
+
 
 int main()
 {
@@ -464,5 +496,57 @@ int main()
 
 	std::cout << "----------------------------------" << std::endl;
 
-	
+	std::vector<int> vec;
+	vec.push_back(10);
+	vec.push_back(20);
+	vec.push_back(30);
+	vec.push_back(40);
+
+	std::cout << "vec" << std::endl;
+	print_vector(vec);
+
+	std::vector<int>::iterator itr = vec.begin() + 2;
+
+	*itr = 50;
+
+	std::cout << "--------------" << std::endl;
+	print_vector(vec);
+	std::cout << ")))))))))))))))))" << std::endl;
+	print_vector_range_based(vec);
+
+	std::vector<int>::const_iterator citr = vec.cbegin() + 2;
+
+	std::vector<int>::reverse_iterator r_iter = vec.rbegin();
+	for (; r_iter != vec.rend(); ++r_iter)
+	{
+		std::cout << *r_iter << std::endl;
+	}
+
+	std::list<int> lst;
+	lst.push_back(10);
+	lst.push_back(20);
+	lst.push_back(30);
+	lst.push_back(40);
+
+	print_list(lst);
+	std::cout << "--------------------" << std::endl;
+	for (std::list<int>::iterator itr = lst.begin(); itr != lst.end(); ++itr)
+	{
+		if (*itr == 20)
+			lst.insert(itr, 50);
+	}
+	std::cout << "--------------------" << std::endl;
+	print_list(lst);
+
+	for (std::list<int>::iterator itr = lst.begin(); itr != lst.end(); ++itr)
+	{
+		if (*itr == 30)
+		{
+			lst.erase(itr);
+			break;
+		}
+			
+	}
+	std::cout << "--------------------" << std::endl;
+	print_list(lst);
 }
