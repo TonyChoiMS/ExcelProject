@@ -11,6 +11,8 @@
 #include <typeinfo>
 #include <vector>
 #include <list>
+#include <set>
+#include <map>
 
 #ifndef UTILS_H
 #define UTILS_H
@@ -463,6 +465,17 @@ void print_list(std::list<T>& lst)
 	std::cout << "]" << std::endl;
 }
 
+template <typename T>
+void print_set(std::set<T>& st)
+{
+	std::cout << "[ ";
+	for (typename std::set<T>::iterator itr = st.begin(); itr != st.end(); ++itr)
+	{
+		std::cout << *itr << " ";
+	}
+	std::cout << " ]" << std::endl;
+}
+
 
 int main()
 {
@@ -549,4 +562,37 @@ int main()
 	}
 	std::cout << "--------------------" << std::endl;
 	print_list(lst);
+
+
+	std::cout << "----------Set !----------" << std::endl;
+	std::set<int> st;
+	st.insert(10);
+	st.insert(60);
+	st.insert(20);
+	st.insert(30);
+	st.insert(40);
+	st.insert(50);
+
+	std::cout << "정렬" << std::endl;
+	print_set(st);
+/*
+	auto itr = st.find(20);
+	if (itr != st.end())
+	{
+		std::cout << "y" << std::endl;
+	}
+	else
+	{
+		std::cout << "n" << std::endl;
+	}
+
+	itr = st.find(25);
+	if (itr != st.end())
+	{
+		std::cout << "y" << std::endl;
+	}
+	else
+	{
+		std::cout << "n" << std::endl;
+	}*/
 }
