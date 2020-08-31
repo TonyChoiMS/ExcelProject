@@ -13,6 +13,9 @@
 #include <list>
 #include <set>
 #include <map>
+#include <unordered_map>
+#include <unordered_set>
+#include <functional>
 
 #ifndef UTILS_H
 #define UTILS_H
@@ -506,6 +509,89 @@ void search_and_print(std::map<K, V>& m, K key)
 	}
 }
 
+template <typename K>
+void print_unordered_set(const std::unordered_set<K>& m)
+{
+	for (const auto& elem : m)
+	{
+		std::cout << elem << std::endl;
+	}
+}
+
+template <typename K>
+void isExist(std::unordered_set<K>& s, K key)
+{
+	auto itr = s.find(key);
+	if (itr != s.end())
+	{
+		std::cout << key << " found!" << std::endl;
+	}
+	else
+	{
+		std::cout << key << " not found !" << std::endl;
+	}
+}
+
+class Todo
+{
+	int priority;
+	std::string job_desc;
+
+public:
+	Todo(int priority, std::string jobDesc) : priority(priority), job_desc(jobDesc) {}
+
+	bool operator==(const Todo& t) const {
+		if (priority == t.priority && job_desc == t.job_desc) 
+			return true;
+		else
+			return false;
+	}
+
+	friend std::ostream& operator<<(std::ostream& o, const Todo& t);
+	friend struct std::hash<Todo>;
+};
+
+namespace std
+{
+	template <>			// hash 클래스의 Todo 템플릿 특수화
+	struct hash<Todo>
+	{
+		size_t operator()(const Todo& t) const
+		{
+			hash<string> hash_func;
+
+			return t.priority ^ (hash_func(t.job_desc));
+		}
+	};
+}
+
+std::ostream& operator<<(std::ostream& o, const Todo& t)
+{
+	o << "[중요도 : " << t.priority << " ] " << t.job_desc;
+	return o;
+}
+
+//struct int_compare
+//{
+//	bool operator()(const int& a, const int& b) const { return a > b; }
+//};
+template <typename T>
+struct GreaterComp
+{
+	bool operator()(const T& a, const T& b) const { return a > b; }
+};
+
+template <typename Iter>
+void print(Iter begin, Iter end)
+{
+	while (begin != end)
+	{
+		std::cout << *begin << " ";
+		begin++;
+	}
+
+	std::cout << std::endl;
+}
 
 int main()
 {
@@ -645,4 +731,26 @@ int main()
 	search_and_print(pitcher_list, std::string("박세웅"));
 	search_and_print(pitcher_list, std::string("류현진"));
 
+
+	std::cout << "------------------------" << std::endl;
+	std::unordered_set<std::string> uos;
+
+	uos.insert("hi");
+	uos.insert("my");
+	uos.insert("name");
+	uos.insert("is");
+	uos.insert("psi");
+	
+	print_unordered_set(uos);
+	isExist(uos, std::string("hi"));
+
+	uos.erase(std::string("hi"));			// uos.erase(uos.find("hi"));
+	isExist(uos, std::string("hi"));
+
+	print(vec.begin(), vec.end());
+	std::cout << "----------------------------------------" << std::endl;
+	std::sort(vec.begin(), vec.end(), GreaterComp<int>());		//
+
+	std::cout << "정렬 후" << std::endl;
+	print(vec.begin(), vec.end());
 }
