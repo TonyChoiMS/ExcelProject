@@ -476,6 +476,36 @@ void print_set(std::set<T>& st)
 	std::cout << " ]" << std::endl;
 }
 
+template <typename K, typename V>
+void print_map(std::map<K, V>& mp)
+{
+	//std::cout << "[ ";
+	//for (typename std::map<K, V>::iterator iter = mp.begin(); iter != mp.end(); ++iter)
+	/*{
+		std::cout << iter->first << " " << iter->second << std::endl;
+	}*/
+	for (const auto& kv : mp)
+	{
+		std::cout << kv.first << " " << kv.second << std::endl;
+	}
+	
+	std::cout << std::endl;
+}
+
+template <typename K, typename V>
+void search_and_print(std::map<K, V>& m, K key)
+{
+	auto itr = m.find(key);
+	if (itr != m.end())
+	{
+		std::cout << key << " --> " << itr->second << std::endl;
+	}
+	else
+	{
+		std::cout << key << " cannot found!" << std::endl;
+	}
+}
+
 
 int main()
 {
@@ -595,4 +625,24 @@ int main()
 	{
 		std::cout << "n" << std::endl;
 	}*/
+
+	std::map<std::string, double> pitcher_list;
+
+	pitcher_list.insert(std::pair<std::string, double>("박세웅", 2.23));
+	pitcher_list.insert(std::pair<std::string, double>("해커", 2.93));
+	pitcher_list.insert(std::pair<std::string, double>("피어밴드", 2.95));
+
+	pitcher_list.insert(std::make_pair("차우준", 3.04));
+	pitcher_list.insert(std::make_pair("장원준", 3.05));
+	pitcher_list.insert(std::make_pair("헥터", 3.09));
+
+	pitcher_list["니퍼트"] = 3.56;
+	pitcher_list["박종훈"] = 3.76;
+	pitcher_list["켈리"] = 3.90;
+
+	print_map(pitcher_list);
+
+	search_and_print(pitcher_list, std::string("박세웅"));
+	search_and_print(pitcher_list, std::string("류현진"));
+
 }
