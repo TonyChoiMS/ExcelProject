@@ -1,3 +1,2 @@
 ﻿  ExcelProject.cpp
-c:\users\minlion\desktop\study\development\excelproject\excelproject\excelproject.cpp(752): error C2065: 'greater': 선언되지 않은 식별자입니다.
-c:\users\minlion\desktop\study\development\excelproject\excelproject\excelproject.cpp(752): error C2062: 예기치 않은 'int' 형식입니다.
+  ExcelProject.vcxproj -> C:\Users\MinLion\Desktop\Study\Development\ExcelProject\Debug\ExcelProject.exe
