@@ -596,46 +596,52 @@ void print(Iter begin, Iter end)
 struct User
 {
 	std::string name;
-	int age;
+	int level;
 
-	User(std::string name, int age) : name(name), age(age) {}
+	User(std::string name, int level) : name(name), level(level) {}
 
-	bool operator<(const User& u) const { return age < u.age; }
+	bool operator<(const User& u) const { return level < u.level; }
+	bool operator==(const User& user) const
+	{
+		if (name == user.name && level == user.level) return true;
+		return false;
+	}
+};
+
+class Party
+{
+	std::vector<User> users;
+
+public:
+	bool addUser(std::string name, int level)
+	{
+		User newUser(name, level);
+		if (std::find(users.begin(), users.end(), newUser) != users.end())
+		{
+			return false;
+		}
+		users.push_back(newUser);
+		return true;
+	}
+
+	bool canJoinDungeon()
+	{
+		return std::all_of(users.begin(), users.end(), [](User& user) { return user.level >= 15; });
+	}
+
+	bool canUserSpecialItem()
+	{
+		return std::any_of(users.begin(), users.end(), [](User& user) {return user.level >= 19; });
+	}
 };
 
 std::ostream& operator<<(std::ostream& o, const User& u)
 {
-	o << u.name << " , " << u.age;
+	o << u.name << " , " << u.level;
 	return o;
 }
 
-void Test()
-{
-	std::vector<User> vec;
-	for (int i = 0; i < 100; i++)
-	{
-		std::string name = "";
-		name.push_back('a' + i / 26);
-		name.push_back('a' + i % 26);
-		vec.push_back(User(name, static_cast<int>(rand() % 10)));
-	}
-
-	std::vector<User> vec2 = vec;
-
-	std::cout << "before sort" << std::endl;
-	print(vec.begin(), vec.end());
-
-	std::sort(vec.begin(), vec.end());
-
-	std::cout << "after sort" << std::endl;
-	print(vec.begin(), vec.end());
-
-	std::cout << "stable sort" << std::endl;
-	std::stable_sort(vec2.begin(), vec2.end());
-	print(vec2.begin(), vec2.end());
-}
-
-int main()
+void TestString()
 {
 	std::cout << StrCat(string("this"), " ", "is", " ", string("a"), " ", string("sentence"));
 	int a = 1, b = 2;
@@ -643,7 +649,10 @@ int main()
 
 	string s = "hello", t = "world";
 	std::cout << "max (" << s << "," << t << ") ? : " << max(s, t) << std::endl;
+}
 
+void TestTypedefClass()
+{
 	typedef Int<1> one;
 	typedef Int<2> two;
 
@@ -659,40 +668,17 @@ int main()
 	typedef Ratio<3, 2> rat2;
 	//typedef Ratio_Add<rat, rat2> rat3;			// 아래 구문과 같은 의미.
 	using rat3 = Ratio_Add<rat, rat2>;
-	
+
 	std::cout << rat3::num << " / " << rat3::den << std::endl;
 
 	typedef void(*func)(int, int);
 	using func = void(*)(int, int);
 
 	std::cout << "----------------------------------" << std::endl;
+}
 
-	std::vector<int> vec;
-	vec.push_back(10);
-	vec.push_back(20);
-	vec.push_back(30);
-	vec.push_back(40);
-
-	std::cout << "vec" << std::endl;
-	print_vector(vec);
-
-	std::vector<int>::iterator itr = vec.begin() + 2;
-
-	*itr = 50;
-
-	std::cout << "--------------" << std::endl;
-	print_vector(vec);
-	std::cout << ")))))))))))))))))" << std::endl;
-	print_vector_range_based(vec);
-
-	std::vector<int>::const_iterator citr = vec.cbegin() + 2;
-
-	std::vector<int>::reverse_iterator r_iter = vec.rbegin();
-	for (; r_iter != vec.rend(); ++r_iter)
-	{
-		std::cout << *r_iter << std::endl;
-	}
-
+void TestList()
+{
 	std::list<int> lst;
 	lst.push_back(10);
 	lst.push_back(20);
@@ -716,12 +702,14 @@ int main()
 			lst.erase(itr);
 			break;
 		}
-			
+
 	}
 	std::cout << "--------------------" << std::endl;
 	print_list(lst);
+}
 
-
+void TestSet()
+{
 	std::cout << "----------Set !----------" << std::endl;
 	std::set<int> st;
 	st.insert(10);
@@ -733,26 +721,6 @@ int main()
 
 	std::cout << "정렬" << std::endl;
 	print_set(st);
-/*
-	auto itr = st.find(20);
-	if (itr != st.end())
-	{
-		std::cout << "y" << std::endl;
-	}
-	else
-	{
-		std::cout << "n" << std::endl;
-	}
-
-	itr = st.find(25);
-	if (itr != st.end())
-	{
-		std::cout << "y" << std::endl;
-	}
-	else
-	{
-		std::cout << "n" << std::endl;
-	}*/
 
 	std::map<std::string, double> pitcher_list;
 
@@ -772,8 +740,107 @@ int main()
 
 	search_and_print(pitcher_list, std::string("박세웅"));
 	search_and_print(pitcher_list, std::string("류현진"));
+}
 
+void TestVector()
+{
+	std::vector<int> vecInt;
+	vecInt.push_back(10);
+	vecInt.push_back(20);
+	vecInt.push_back(30);
+	vecInt.push_back(40);
 
+	std::cout << "vec" << std::endl;
+	print_vector(vecInt);
+
+	std::vector<int>::iterator itr = vecInt.begin() + 2;
+
+	*itr = 50;
+
+	std::cout << "--------------" << std::endl;
+	print_vector(vecInt);
+	std::cout << ")))))))))))))))))" << std::endl;
+	print_vector_range_based(vecInt);
+
+	std::vector<int>::const_iterator citr = vecInt.cbegin() + 2;
+
+	std::vector<int>::reverse_iterator r_iter = vecInt.rbegin();
+	for (; r_iter != vecInt.rend(); ++r_iter)
+	{
+		std::cout << *r_iter << std::endl;
+	}
+
+	std::vector<User> vec;
+	for (int i = 0; i < 100; i++)
+	{
+		std::string name = "";
+		name.push_back('a' + i / 26);
+		name.push_back('a' + i % 26);
+		vec.push_back(User(name, static_cast<int>(rand() % 10)));
+	}
+
+	std::vector<User> vec2 = vec;
+
+	std::cout << "before sort" << std::endl;
+	print(vecInt.begin(), vecInt.end());
+
+	std::sort(vecInt.begin(), vecInt.end());
+
+	std::cout << "after sort" << std::endl;
+	print(vecInt.begin(), vecInt.end());
+
+	std::cout << "stable sort" << std::endl;
+	std::stable_sort(vec2.begin(), vec2.end());
+	print(vec2.begin(), vec2.end());
+
+	print(vecInt.begin(), vecInt.end());
+	std::cout << "----------------------------------------" << std::endl;
+	std::sort(vecInt.begin(), vecInt.end(), GreaterComp<int>());		
+
+	std::cout << "정렬 후" << std::endl;
+	print(vecInt.begin(), vecInt.end());
+
+	std::cout << "----------------------------------------" << std::endl;
+	vecInt.clear();
+
+	vecInt.push_back(5);
+	vecInt.push_back(3);
+	vecInt.push_back(2);
+	vecInt.push_back(2);
+	vecInt.push_back(3);
+	vecInt.push_back(4);
+
+	std::cout << "처음 vec 상태 ======" << std::endl;
+	print(vecInt.begin(), vecInt.end());
+
+	std::cout << "벡터 전체에 1을 더한다." << std::endl;
+	std::transform(vecInt.begin(), vecInt.end(), vecInt.begin(), [](int i) {return i + 1; });
+	print(vecInt.begin(), vecInt.end());
+
+	auto result = std::find(vecInt.begin(), vecInt.end(), 3);
+	std::cout << "3은 " << std::distance(vecInt.begin(), result) + 1 << "번째 원소" << std::endl;
+
+	auto current = vecInt.begin();
+	while (true)
+	{
+		current = std::find(current, vecInt.end(), 3);
+		if (current == vecInt.end()) break;
+		std::cout << "3은 " << std::distance(vecInt.begin(), current) + 1 << "번 째 원소" << std::endl;
+		current++;
+	}
+
+	current = vecInt.begin();
+	while (true)
+	{
+		current = std::find_if(current, vecInt.end(), [](int i) { return i % 3 == 2; });
+		if (current == vecInt.end()) break;
+		std::cout << "3으로 나눈 나머지가 2인 원소는 " << *current << std::endl;
+		current++;
+	}
+}
+
+void TestUnorderedSet()
+{
 	std::cout << "------------------------" << std::endl;
 	std::unordered_set<std::string> uos;
 
@@ -782,19 +849,29 @@ int main()
 	uos.insert("name");
 	uos.insert("is");
 	uos.insert("psi");
-	
+
 	print_unordered_set(uos);
 	isExist(uos, std::string("hi"));
 
 	uos.erase(std::string("hi"));			// uos.erase(uos.find("hi"));
 	isExist(uos, std::string("hi"));
+}
 
-	print(vec.begin(), vec.end());
-	std::cout << "----------------------------------------" << std::endl;
-	std::sort(vec.begin(), vec.end(), GreaterComp<int>());		//
+void TestParty()
+{
+	Party party;
+	party.addUser("전사", 15);
+	party.addUser("도적", 18);
+	party.addUser("주술", 12);
+	party.addUser("도사", 19);
 
-	std::cout << "정렬 후" << std::endl;
-	print(vec.begin(), vec.end());
+	std::cout << std::boolalpha;
+	std::cout << "던전 입장 가능 ? " << party.canJoinDungeon() << std::endl;
+	std::cout << "특별 아이템 사용가능 ? " << party.canUserSpecialItem() << std::endl;
+}
 
-	Test();
+int main()
+{
+	//TestVector();
+	TestParty();
 }
