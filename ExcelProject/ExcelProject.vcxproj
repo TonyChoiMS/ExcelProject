@@ -153,6 +153,7 @@
   <ItemGroup>
     <ClCompile Include="Array.cpp" />
     <ClCompile Include="Cell.cpp" />
+    <ClCompile Include="Complex.cpp" />
     <ClCompile Include="ExcelProject.cpp" />
     <ClCompile Include="MyString.cpp" />
     <ClCompile Include="Stack.cpp" />
@@ -161,6 +162,7 @@
   <ItemGroup>
     <ClInclude Include="Array.h" />
     <ClInclude Include="Cell.h" />
+    <ClInclude Include="Complex.h" />
     <ClInclude Include="MyString.h" />
     <ClInclude Include="Stack.h" />
     <ClInclude Include="Table.h" />
