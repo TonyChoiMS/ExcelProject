@@ -7,10 +7,12 @@ private:
 	int memoryCapacity;				// 메모리 공간의 크기
 
 public:
+	MyString();
 	explicit MyString(int capacity);			// 할당할 메모리 공간을 미리 지정.
 	MyString(char c);				// 문자열 하나로 생성
 	MyString(const char* str);		// 문자열로부터 생성
 	MyString(const MyString& str);	// 복사생성자
+	MyString operator+(const MyString &s);
 	~MyString();
 
 	int Length() const;

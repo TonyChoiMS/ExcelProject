@@ -2,8 +2,17 @@
 #include <iostream>
 #include <algorithm>
 
+MyString::MyString()
+{
+	std::cout << "생성자 호출!" << std::endl;
+	stringContent = nullptr;
+	stringLength = 0;
+	memoryCapacity = 0;
+}
+
 MyString::MyString(int capacity)
 {
+	std::cout << "생성자 호출!" << std::endl;
 	stringContent = new char[capacity];
 	stringLength = 0;
 	memoryCapacity = capacity;
@@ -11,6 +20,7 @@ MyString::MyString(int capacity)
 
 MyString::MyString(char c)
 {
+	std::cout << "생성자 호출!" << std::endl;
 	stringContent = new char[1];
 	stringContent[0] = c;
 	stringLength = 1;
@@ -19,6 +29,7 @@ MyString::MyString(char c)
 
 MyString::MyString(const char * str)
 {
+	std::cout << "생성자 호출!" << std::endl;
 	stringLength = strlen(str);
 	memoryCapacity = stringLength;
 	stringContent = new char[stringLength];
@@ -31,6 +42,7 @@ MyString::MyString(const char * str)
 
 MyString::MyString(const MyString & str)
 {
+	std::cout << "복사 생성자 호출!" << std::endl;
 	stringLength = str.stringLength;
 	memoryCapacity = str.stringLength;
 	stringContent = new char[stringLength];
@@ -38,6 +50,24 @@ MyString::MyString(const MyString & str)
 	{
 		stringContent[i] = str.stringContent[i];
 	}
+}
+
+MyString MyString::operator+(const MyString & s)
+{
+	MyString str;
+	str.Reserve(stringLength + s.stringLength);
+	for (int i = 0; i < stringLength; i++)
+	{
+		str.stringContent[i] = stringContent[i];
+	}
+
+	for (int i = 0; i < s.stringLength; i++)
+	{
+		str.stringContent[stringLength + i] = s.stringContent[i];
+	}
+
+	str.stringLength = stringLength + s.stringLength;
+	return str;
 }
 
 MyString::~MyString()
@@ -128,7 +158,7 @@ void MyString::Reserve(int size)
 			stringContent[i] = prevStringContent[i];
 		}
 
-		delete[] prevStringContent;
+		if (prevStringContent != nullptr) delete[] prevStringContent;
 	}
 }
 

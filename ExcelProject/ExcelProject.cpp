@@ -172,7 +172,6 @@ struct Comp1 { bool operator()(int a, int b) { return a > b; } };
 
 struct Comp2 { bool operator()(int a, int b) { return a < b; } };
 
-
 template <typename T>
 void print_array(const T& arr)
 {
@@ -987,8 +986,30 @@ void MyStringTest()
 	str1.Println();
 }
 
+class CopyElisionT
+{
+	int _data;
+
+public:
+	CopyElisionT(int data) : _data(data) { std::cout << "일반 생성자 호출!" << std::endl; }
+
+	CopyElisionT(const CopyElisionT& t) : _data(t._data) { std::cout << "복사 생성자 호출!" << std::endl; }
+};
+
+void CopyElisionTest()
+{
+	CopyElisionT cp(1);
+	CopyElisionT cp1(cp);
+
+	CopyElisionT cp2(CopyElisionT(2));
+}
+
 int main()
 {
-	//TestUTF();
-	
+	CopyElisionTest();
+	MyString str1("abc");
+	MyString str2("def");
+	std::cout << "------------" << std::endl;
+	MyString str3 = str1 + str2;
+	str3.Print();
 }
