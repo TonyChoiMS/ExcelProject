@@ -4,7 +4,6 @@
 #include <string>
 #include <fstream>
 #include <sstream>
-#include "Vector.h"
 #include "Stack.h"
 #include "Cell.h"
 #include "Table.h"
@@ -16,6 +15,8 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <functional>
+#include <cctype>
+#include "MyString.h"
 
 #ifndef UTILS_H
 #define UTILS_H
@@ -870,8 +871,124 @@ void TestParty()
 	std::cout << "특별 아이템 사용가능 ? " << party.canUserSpecialItem() << std::endl;
 }
 
+// char_traits의 모든 함수들은 static 함수이다.
+struct myCharTraits : public std::char_traits<char>
+{
+	static int getRealRank(char c)
+	{
+		// 숫자면 순위를 엄청 떨어트린다.
+		if (isdigit(c))
+			return c + 256;
+
+		return c;
+	}
+
+	static bool lt(char c1, char c2)
+	{
+		return getRealRank(c1) < getRealRank(c2);
+	}
+
+	static int compare(const char* s1, const char* s2, size_t n)
+	{
+		while (n-- != 0)
+		{
+			if (getRealRank(*s1) < getRealRank(*s2)) { return -1; }
+			if (getRealRank(*s1) > getRealRank(*s2)) { return 1; }
+			++s1;
+			++s2;
+		}
+
+		return 0;
+	}
+};
+
+void TestBasicString()
+{
+	std::basic_string<char, myCharTraits> my_s1 = "1a";
+	std::basic_string<char, myCharTraits> my_s2 = "a1";
+
+
+	std::cout << "우선 순위 : " << std::boolalpha << (my_s1 < my_s2) << std::endl;
+
+	std::string s1 = "1a";
+	std::string s2 = "a1";
+
+	std::cout << "우선 순위 : " << std::boolalpha << (s1 < s2) << std::endl;
+}
+
+void* operator new(std::size_t count)
+{
+	std::cout << count << " bytes 할당" << std::endl;
+	return malloc(count);
+}
+
+void SSOTest()
+{
+	std::cout << "s1 constructor" << std::endl;
+	std::string s1 = "this is a pretty long sentence !!";
+	std::cout << "s1 size : " << sizeof(s1) << std::endl;			// 28
+
+	std::cout << "s2 constructor" << std::endl;
+	std::string s2 = "short sentence";
+	std::cout << "s2 size : " << sizeof(s2) << std::endl;			// 28
+}
+
+void TestUTF()
+{
+	//std::string str = "hello";		// char[]
+	//std::wstring wstr = L"hello";	// wchar_t[]
+	std::u32string u32_str = U"이건 UTF-32 문자열입니다.";
+	std::cout << u32_str.size() << std::endl;			// 17
+
+	std::string str8 = u8"이건 UTF-8 문자열 입니다.";
+	std::cout << str8.size() << std::endl;				// 33
+	
+	size_t i = 0;
+	size_t len = 0;
+
+	while (i < str8.size())
+	{
+		int char_size = 0;
+		if ((str8[i] & 0b11111000) == 0b11110000)
+			char_size = 4;
+		else if ((str8[i] & 0b11110000) == 0b11100000)
+			char_size = 3;
+		else if ((str8[i] & 0b11100000) == 0b11000000)
+			char_size = 2;
+		else if ((str8[i] & 0b10000000) == 0b00000000)
+			char_size = 1;
+		else
+		{
+			std::cout << "이상한 문자" << std::endl;
+			char_size = 1;
+		}
+
+		std::cout << str8.substr(i, char_size) << std::endl;
+
+		i += char_size;
+		len++;
+	}
+
+	std::cout << "문자열의 실제 길이 : " << len << std::endl;
+
+	std::u16string u16_str = u"이건 UTF-16 문자열 입니다.";
+	std::cout << u16_str.size() << std::endl;
+}
+
+void MyStringTest()
+{
+	MyString str1("very very very long string");
+	MyString str2("<some string inserted between>");
+	str1.Reserve(30);
+
+	std::cout << "Capacity : " << str1.Capacity() << std::endl;
+	std::cout << "string length : " << str1.Length() << std::endl;
+	str1.Insert(5, str2);
+	str1.Println();
+}
+
 int main()
 {
-	//TestVector();
-	TestParty();
+	//TestUTF();
+	
 }

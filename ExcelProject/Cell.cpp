@@ -1,7 +1,7 @@
 ﻿#include "Cell.h"
 #include "Stack.h"
 #include "Table.h"
-#include "Vector.h"
+
 #include <time.h>
 
 // Cell~~~~

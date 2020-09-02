@@ -154,18 +154,16 @@
     <ClCompile Include="Array.cpp" />
     <ClCompile Include="Cell.cpp" />
     <ClCompile Include="ExcelProject.cpp" />
+    <ClCompile Include="MyString.cpp" />
     <ClCompile Include="Stack.cpp" />
     <ClCompile Include="Table.cpp" />
-    <ClCompile Include="Utils.cpp" />
-    <ClCompile Include="Vector.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Array.h" />
     <ClInclude Include="Cell.h" />
+    <ClInclude Include="MyString.h" />
     <ClInclude Include="Stack.h" />
     <ClInclude Include="Table.h" />
-    <ClInclude Include="Utils.h" />
-    <ClInclude Include="Vector.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
