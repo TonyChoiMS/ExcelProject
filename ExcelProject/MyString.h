@@ -12,7 +12,13 @@ public:
 	MyString(char c);				// 문자열 하나로 생성
 	MyString(const char* str);		// 문자열로부터 생성
 	MyString(const MyString& str);	// 복사생성자
+	MyString(MyString &&str) noexcept;		// 이동생성자
+
+	MyString &operator=(const MyString &s);		// 일반적인 대입연산자
+	MyString operator=(MyString&& s);			// 이동 대입연산자
 	MyString operator+(const MyString &s);
+
+
 	~MyString();
 
 	int Length() const;

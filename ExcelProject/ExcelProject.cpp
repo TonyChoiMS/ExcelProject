@@ -1004,12 +1004,21 @@ void CopyElisionTest()
 	CopyElisionT cp2(CopyElisionT(2));
 }
 
-int main()
+template <typename T>
+void mySwap(T &a, T &b)
 {
-	CopyElisionTest();
 	MyString str1("abc");
 	MyString str2("def");
-	std::cout << "------------" << std::endl;
-	MyString str3 = str1 + str2;
-	str3.Print();
+	std::cout << "before swap--" << std::endl;
+	std::cout << "str1 : ";
+	str1.Println();
+	std::cout << "str2 : ";
+	str2.Println();
+
+	std::cout << "swap -- " << std::endl;
+}
+
+int main()
+{
+	
 }

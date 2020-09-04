@@ -52,6 +52,48 @@ MyString::MyString(const MyString & str)
 	}
 }
 
+MyString::MyString(MyString && str) noexcept
+{
+	std::cout << "이동 생성자 호출 ! " << std::endl;
+	stringLength = str.stringLength;
+	stringContent = str.stringContent;
+	memoryCapacity = str.memoryCapacity;
+
+	// 임시 객체 소멸 시에 메모리를 해제하지 못하게.
+	str.stringContent = nullptr;
+}
+
+MyString & MyString::operator=(const MyString &s)
+{
+	std::cout << "Copy" << std::endl;
+	if (s.stringLength > memoryCapacity)
+	{
+		delete[] stringContent;
+		stringContent = new char[s.stringLength];
+		memoryCapacity = s.stringLength;
+	}
+
+	stringLength = s.stringLength;
+	for (int i = 0; i != stringLength; i++)
+	{
+		stringContent[i] = s.stringContent[i];
+	}
+
+	return *this;
+}
+
+MyString MyString::operator=(MyString && s)
+{
+	std::cout << "Move" << std::endl;
+	stringContent = s.stringContent;
+	memoryCapacity = s.memoryCapacity;
+	stringLength = s.stringLength;
+	s.stringContent = nullptr;
+	s.memoryCapacity = 0;
+	s.stringLength = 0;
+	return *this;
+}
+
 MyString MyString::operator+(const MyString & s)
 {
 	MyString str;
@@ -72,7 +114,7 @@ MyString MyString::operator+(const MyString & s)
 
 MyString::~MyString()
 {
-	delete[] stringContent;
+	if (stringContent) delete[] stringContent;
 }
 
 int MyString::Length() const
