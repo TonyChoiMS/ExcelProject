@@ -915,11 +915,11 @@ void TestBasicString()
 	std::cout << "우선 순위 : " << std::boolalpha << (s1 < s2) << std::endl;
 }
 
-void* operator new(std::size_t count)
-{
-	std::cout << count << " bytes 할당" << std::endl;
-	return malloc(count);
-}
+//void* operator new(std::size_t count)
+//{
+//	std::cout << count << " bytes 할당" << std::endl;
+//	return malloc(count);
+//}
 
 void SSOTest()
 {
@@ -1007,6 +1007,19 @@ void CopyElisionTest()
 template <typename T>
 void mySwap(T &a, T &b)
 {
+	T tmp(a);
+	a = b;
+	b = tmp;
+}
+
+template<>
+void mySwap(MyString &a, MyString &b)
+{
+
+}
+
+int main()
+{
 	MyString str1("abc");
 	MyString str2("def");
 	std::cout << "before swap--" << std::endl;
@@ -1016,9 +1029,7 @@ void mySwap(T &a, T &b)
 	str2.Println();
 
 	std::cout << "swap -- " << std::endl;
-}
-
-int main()
-{
-	
+	mySwap(str1, str2);
+	str1.Println();
+	str2.Println();
 }
