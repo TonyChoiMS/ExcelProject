@@ -1007,29 +1007,35 @@ void CopyElisionTest()
 template <typename T>
 void mySwap(T &a, T &b)
 {
-	T tmp(a);
-	a = b;
-	b = tmp;
+	T tmp(std::move(a));
+	a = std::move(b);
+	b = std::move(tmp);
 }
 
-template<>
-void mySwap(MyString &a, MyString &b)
+template <typename T>
+void Wrapper(T&& u)
 {
-
+	g(std::forward<T>(u));
 }
+
+class A {};
+
+void g(A& a) { std::cout << "좌측값 레퍼런스 호출" << std::endl; }
+void g(const A& a) { std::cout << "좌측값 상수 레퍼런스 호출" << std::endl; }
+void g(A&& a) { std::cout << "우측값 레퍼런스 호출" << std::endl; }
 
 int main()
 {
-	MyString str1("abc");
-	MyString str2("def");
-	std::cout << "before swap--" << std::endl;
-	std::cout << "str1 : ";
-	str1.Println();
-	std::cout << "str2 : ";
-	str2.Println();
+	A a;
+	const A ca;
 
-	std::cout << "swap -- " << std::endl;
-	mySwap(str1, str2);
-	str1.Println();
-	str2.Println();
+	std::cout << "원본==" << std::endl;
+	g(a);
+	g(ca);
+	g(A());
+
+	std::cout << "Wrapper ==" << std::endl;
+	Wrapper(a);
+	Wrapper(ca);
+	Wrapper(A());
 }

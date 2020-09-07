@@ -15,7 +15,7 @@ public:
 	MyString(MyString &&str) noexcept;		// 이동생성자
 
 	MyString &operator=(const MyString &s);		// 일반적인 대입연산자
-	MyString operator=(MyString&& s);			// 이동 대입연산자
+	MyString& operator=(MyString&& s);			// 이동 대입연산자
 	MyString operator+(const MyString &s);
 
 

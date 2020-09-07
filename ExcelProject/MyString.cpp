@@ -82,7 +82,7 @@ MyString & MyString::operator=(const MyString &s)
 	return *this;
 }
 
-MyString MyString::operator=(MyString && s)
+MyString& MyString::operator=(MyString && s)
 {
 	std::cout << "Move" << std::endl;
 	stringContent = s.stringContent;
