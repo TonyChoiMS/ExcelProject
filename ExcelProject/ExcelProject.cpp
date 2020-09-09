@@ -17,6 +17,7 @@
 #include <functional>
 #include <cctype>
 #include "MyString.h"
+#include <memory>
 
 #ifndef UTILS_H
 #define UTILS_H
@@ -1024,18 +1025,54 @@ void g(A& a) { std::cout << "좌측값 레퍼런스 호출" << std::endl; }
 void g(const A& a) { std::cout << "좌측값 상수 레퍼런스 호출" << std::endl; }
 void g(A&& a) { std::cout << "우측값 레퍼런스 호출" << std::endl; }
 
+class Node
+{
+	std::string s;
+	std::weak_ptr<Node> other;
+
+public:
+	Node(const std::string& s) : s(s) { std::cout << "Get Resource " << std::endl; }
+
+	~Node() { std::cout << "Desturctor" << std::endl; }
+
+	void setOther(std::weak_ptr<Node> o) { other = o; }
+	void accessOther()
+	{
+		std::shared_ptr<Node> o = other.lock();
+		if (o)
+		{
+			std::cout << "access : " << o->name() << std::endl;
+		}
+		else
+		{
+			std::cout << "destruction" << std::endl;
+		}
+	}
+
+	std::string name() { return s; }
+};
+
+
+void add(int x, int y)
+{
+	std::cout << x << " + " << y << "=" << x + y << std::endl;
+}
+
+void subtract(int x, int y)
+{
+	std::cout << x << " - " << y << " = " << x - y << std::endl;
+}
+
 int main()
 {
-	A a;
-	const A ca;
+	auto add_with_2 = std::bind(add, 2, std::placeholders::_1);
+	add_with_2(3);
 
-	std::cout << "원본==" << std::endl;
-	g(a);
-	g(ca);
-	g(A());
+	add_with_2(3, 4);
 
-	std::cout << "Wrapper ==" << std::endl;
-	Wrapper(a);
-	Wrapper(ca);
-	Wrapper(A());
+	auto subtract_from_2 = std::bind(subtract, std::placeholders::_1, 2);
+	auto negate = std::bind(subtract, std::placeholders::_2, std::placeholders::_1);
+
+	subtract_from_2(3);
+	negate(4, 2);
 }
