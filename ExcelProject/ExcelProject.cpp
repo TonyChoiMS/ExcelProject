@@ -1,4 +1,4 @@
-﻿
+﻿#include <atomic>
 #include <iostream>
 #include <array>
 #include <string>
@@ -1155,37 +1155,49 @@ void TestCode()
 	}
 }
 
+using std::memory_order_relaxed;
+
+std::atomic<bool> is_ready;
+std::atomic<int> data[3];
+
+void prod()
+{
+	data[0].store(1, memory_order_relaxed);
+	data[1].store(2, memory_order_relaxed);
+	data[2].store(3, memory_order_relaxed);
+	is_ready.store(true, std::memory_order_release);
+}
+
+void consum()
+{
+	while (!is_ready.load(std::memory_order_acquire)) {}
+
+	std::cout << "data[0]" << data[0].load(memory_order_relaxed) << std::endl;
+	std::cout << "data[1]" << data[1].load(memory_order_relaxed) << std::endl;
+	std::cout << "data[2]" << data[2].load(memory_order_relaxed) << std::endl;
+}
 
 int main()
 {
-	std::vector<int> data(10000);
-	for (int i = 0; i < 10000; i++)
-	{
-		data[i] = i;
-	}
-
-	std::vector<int> partial_sums(4);
-	std::vector<std::thread> workers;
-	int counter = 0;
-	std::mutex m;
-	for (int i = 0; i < 4; i++)
-	{
-		//workers.push_back(std::thread(worker, data.begin() + i * 2500, data.begin() + (i + 1) * 2500, &partial_sums[i]));
-		workers.push_back(std::thread(workerSum, std::ref(counter), std::ref(m)));
-	}
-
-	for (int i = 0; i < 4; i++)
-	{
-		workers[i].join();
-	}
-	std::cout << "sum : " << counter << std::endl;
-	/*int total = 0;
-	for (int i = 0; i < 4; i++)
-	{
-		total += partial_sums[i];
-	}
-
-	std::cout << "sum : " << total << std::endl;*/
 
 	TestCode();
+
+	std::vector<std::thread> threads;
+
+	threads.push_back(std::thread(prod));
+	threads.push_back(std::thread(consum));
+
+	for (int i = 0; i < 2; i++)
+	{
+		threads[i].join();
+	}
+
+	std::vector<char> s;
+s.
+	for (int i = 0; i < (s.size / 2); i++)
+	{
+		string tmp = s[i];
+		s[i] = s[s.size - i];
+		s[s.size - i] = tmp;
+	}
 }
