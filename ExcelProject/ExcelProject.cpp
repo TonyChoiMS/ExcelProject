@@ -22,6 +22,7 @@
 #include <cstdio>
 #include <mutex>
 #include "ProducerConsumer.h"
+#include "JsonParser.h"
 #ifndef UTILS_H
 #define UTILS_H
 
@@ -1177,6 +1178,13 @@ void consum()
 	std::cout << "data[2]" << data[2].load(memory_order_relaxed) << std::endl;
 }
 
+#define TOKEN_COUNT 20
+
+typedef struct _JSON
+{
+	TOKEN tokens[TOKEN_COUNT];
+} JSON;
+
 int main()
 {
 
@@ -1192,12 +1200,10 @@ int main()
 		threads[i].join();
 	}
 
-	std::vector<char> s;
-s.
-	for (int i = 0; i < (s.size / 2); i++)
+	std::vector<int> nums;
+
+	for (int i = 0; i < nums.size(); i++)
 	{
-		string tmp = s[i];
-		s[i] = s[s.size - i];
-		s[s.size - i] = tmp;
+		nums[i];
 	}
 }

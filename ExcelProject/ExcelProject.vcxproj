@@ -155,6 +155,7 @@
     <ClCompile Include="Cell.cpp" />
     <ClCompile Include="Complex.cpp" />
     <ClCompile Include="ExcelProject.cpp" />
+    <ClCompile Include="JsonParser.cpp" />
     <ClCompile Include="MyString.cpp" />
     <ClCompile Include="ProducerConsumer.cpp" />
     <ClCompile Include="Stack.cpp" />
@@ -164,6 +165,7 @@
     <ClInclude Include="Array.h" />
     <ClInclude Include="Cell.h" />
     <ClInclude Include="Complex.h" />
+    <ClInclude Include="JsonParser.h" />
     <ClInclude Include="MyString.h" />
     <ClInclude Include="ProducerConsumer.h" />
     <ClInclude Include="Stack.h" />
