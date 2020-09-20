@@ -1177,18 +1177,12 @@ void consum()
 	std::cout << "data[1]" << data[1].load(memory_order_relaxed) << std::endl;
 	std::cout << "data[2]" << data[2].load(memory_order_relaxed) << std::endl;
 }
-
-#define TOKEN_COUNT 20
-
-typedef struct _JSON
-{
-	TOKEN tokens[TOKEN_COUNT];
-} JSON;
+#include "JsonParser.h"
 
 int main()
 {
 
-	TestCode();
+	//TestCode();
 
 	std::vector<std::thread> threads;
 
@@ -1206,4 +1200,7 @@ int main()
 	{
 		nums[i];
 	}
+
+	JsonParser js;
+	js.TestCode();
 }

@@ -1,3 +1,2 @@
-﻿  ExcelProject.cpp
-c:\users\minlion\desktop\study\development\excelproject\excelproject\excelproject.cpp(1080): warning C4477: 'printf' : 서식 문자열 '%x'에 'unsigned int' 형식의 인수가 필요하지만 variadic 인수 1의 형식이 'std::thread::id'입니다.
+﻿  JsonParser.cpp
   ExcelProject.vcxproj -> C:\Users\MinLion\Desktop\Study\Development\ExcelProject\Debug\ExcelProject.exe
