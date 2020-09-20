@@ -23,6 +23,7 @@
 #include <mutex>
 #include "ProducerConsumer.h"
 #include "JsonParser.h"
+#include <locale>
 #ifndef UTILS_H
 #define UTILS_H
 
@@ -1173,15 +1174,15 @@ void consum()
 {
 	while (!is_ready.load(std::memory_order_acquire)) {}
 
-	std::cout << "data[0]" << data[0].load(memory_order_relaxed) << std::endl;
-	std::cout << "data[1]" << data[1].load(memory_order_relaxed) << std::endl;
-	std::cout << "data[2]" << data[2].load(memory_order_relaxed) << std::endl;
+	//std::cout << "data[0]" << data[0].load(memory_order_relaxed) << std::endl;
+	//std::cout << "data[1]" << data[1].load(memory_order_relaxed) << std::endl;
+	//std::cout << "data[2]" << data[2].load(memory_order_relaxed) << std::endl;
 }
-#include "JsonParser.h"
+#include <string>
 
 int main()
 {
-
+	setlocale(LC_ALL, "ko_KR.utf8");
 	//TestCode();
 
 	std::vector<std::thread> threads;
@@ -1202,5 +1203,13 @@ int main()
 	}
 
 	JsonParser js;
-	js.TestCode();
+	//js.TestCode();
+
+	const wchar_t* ts = L"이건 그렇고 그런 얘기";
+	std::wcout << ts << std::endl;
+	
+	for (size_t i = 0; i < wcslen(ts); i++)
+	{
+		//if (wcscmp(ts[i], L' '))
+	}
 }

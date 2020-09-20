@@ -1,21 +1,26 @@
 #include "JsonParser.h"
 #include <filesystem>
+#include <locale>
+#include <string>
+#include <iostream>
 
-char* JsonParser::readFile(const char * fileName, int * readSize)
+char* JsonParser::readFile(const char * fileName, size_t * readSize)
 {
 	FILE *fp = fopen(fileName, "rb");
+	std::cout << fp << std::endl;
 	if (fp == nullptr)
 		return nullptr;
 
-	int size;
+	size_t size;
 	char *buffer;
-
+	
 	// 파일 크기 구하기
 	fseek(fp, 0, SEEK_END);
 	size = ftell(fp);
 	fseek(fp, 0, SEEK_SET);
 
 	// 파일 크기 + NULL 공간만큼 메모리를 할당하고 0으로 초기화
+	
 	buffer = new char[size + 1];
 	memset(buffer, 0, size + 1);
 
@@ -35,31 +40,32 @@ char* JsonParser::readFile(const char * fileName, int * readSize)
 	return buffer;
 }
 
-void JsonParser::ParseJson(char * doc, int size, JSON * json)
+void JsonParser::ParseJson(char * doc, size_t size, JSON * json)
 {
-	int tokenIndex = 0;
-	int pos = 0;
-
-	if (doc[pos] != '{')
-		return;
+	size_t tokenIndex = 0;
+	size_t pos = 0;
+	
+	//if (doc[pos] != L'{')
+	/*if (wcscmp(const_cast<wchar_t &>(doc[pos]), L'{'))
+		return;*/
 
 	pos++;
-
+	
 	while (pos < size)
 	{
 		char* begin;
 		char* end;
-		int stringLength;
-
+		size_t stringLength;
+		//std::wcout << "doc[pos] :" << doc[pos] << std::endl;
 		switch (doc[pos])
 		{
-		case '"':
+		case L'"':
 		
 			// 문자열의 시작 위치 구함. 맨 앞의 "를 제외하기 위해 + 1
 			begin = doc + pos + 1;
 
 			// 문자열의 끝 위치를 구함. 다음 " 의 위치
-			end = strchr(begin, '"');
+			end = strchr(begin, L'"');
 			if (end == nullptr)
 				break;
 
@@ -80,15 +86,15 @@ void JsonParser::ParseJson(char * doc, int size, JSON * json)
 
 			pos = pos + stringLength + 1;	// 현재 위치 + 문자열 길이 + "( + 1)
 			break;
-		case '[':
+		case L'[':
 		
 			pos++;
-			while (doc[pos] != ']')
+			while (doc[pos] != L']')
 			{
-				if (doc[pos] == '"')
+				if (doc[pos] == L'"')
 				{
 					begin = doc + pos + 1;
-					end = strchr(begin, '"');
+					end = strchr(begin, L'"');
 					if (end == nullptr)
 						break;
 
@@ -109,15 +115,15 @@ void JsonParser::ParseJson(char * doc, int size, JSON * json)
 			}	
 			break;
 
-		case '0': case '1': case '2': case '3': case '4': case '5':
-		case '6': case '7': case '8': case '9': case '-':
+		case L'0': case L'1': case L'2': case L'3': case L'4': case L'5':
+		case L'6': case L'7': case L'8': case L'9': case L'-':
 			begin = doc + pos;
 			char* buffer;
 
-			end = strchr(doc + pos, ',');
+			end = strchr(doc + pos, L',');
 			if (end == nullptr)
 			{
-				end = strchr(doc + pos, '}');
+				end = strchr(doc + pos, L'}');
 				if (end == nullptr)
 					break;
 			}
@@ -151,10 +157,12 @@ void JsonParser::FreeJson(JSON * json)
 	}
 }
 
-char * JsonParser::GetString(JSON * json, const char * key)
+char * JsonParser::GetString(JSON* json, const char* key)
 {
+	
 	for (int i = 0; i < TOKEN_COUNT; i++)
 	{
+		//std::wcout << "json->tokens[i].type : " << json->tokens[i].type << std::endl;// "," << wcscmp(json->tokens[i].string, key) << ", " << json->tokens[i].string << std::endl;
 		// 토큰 종류가 문자열이면서 토큰의 문자열이 키와 일치하면
 		if (json->tokens[i].type == TOKEN_STRING &&
 			strcmp(json->tokens[i].string, key) == 0)
@@ -188,7 +196,7 @@ char * JsonParser::GetArrayString(JSON * json, const char * key, int index)
 	return nullptr;
 }
 
-int JsonParser::GetArrayCount(JSON * json, const char * key)
+size_t JsonParser::GetArrayCount(JSON * json, const char * key)
 {
 	for (int i = 0; i < TOKEN_COUNT; i++)
 	{
@@ -223,17 +231,17 @@ double JsonParser::GetNumber(JSON * json, const char * key)
 void JsonParser::WriteJsonFile()
 {
 	// JSON 문서에 저장할 데이터
-	char *title = "Inception";
-	int year = 2010;
-	int runtime = 148;
-	char *genre = "Sci-Fi";
-	char *director = "Christopher Nolan";
-	char actors[5][30] = {
-		"Leonardo DiCaprio",
-		"Joseph Gordon-Levitt",
-		"Ellen Page",
-		"Tom Hardy",
-		"Ken Watanabe"
+	const wchar_t *title = L"Inception";
+	size_t year = 2010;
+	size_t runtime = 148;
+	const wchar_t *genre = L"Sci-Fi";
+	const wchar_t *director = L"Christopher Nolan";
+	const wchar_t actors[5][30] = {
+		L"Leonardo DiCaprio",
+		L"Joseph Gordon-Levitt",
+		L"Ellen Page",
+		L"Tom Hardy",
+		L"Ken Watanabe"
 	};
 	double imdbRating = 8.8;
 
@@ -241,17 +249,17 @@ void JsonParser::WriteJsonFile()
 
 	// JSON 문법에 맞춰서 fprintf 함수로 값 출력
 	fprintf(fp, "{\n");
-	fprintf(fp, "  \"Title\": \"%s\",\n", title);
-	fprintf(fp, "  \"Year\": %d,\n", year);
-	fprintf(fp, "  \"Runtime\": %d,\n", runtime);
-	fprintf(fp, "  \"Genre\": \"%s\",\n", genre);
-	fprintf(fp, "  \"Director\": \"%s\",\n", director);
+	fprintf(fp, "  \"Title\": \"%ls\",\n", title);
+	fprintf(fp, "  \"Year\": %ls,\n", year);
+	fprintf(fp, "  \"Runtime\": %Ls,\n", runtime);
+	fprintf(fp, "  \"Genre\": \"%ws\",\n", genre);
+	fprintf(fp, "  \"Director\": \"%ls\",\n", director);
 	fprintf(fp, "  \"Actors\": [\n");
-	fprintf(fp, "    \"%s\", \n", actors[0]);
-	fprintf(fp, "    \"%s\", \n", actors[1]);
-	fprintf(fp, "    \"%s\", \n", actors[2]);
-	fprintf(fp, "    \"%s\", \n", actors[3]);
-	fprintf(fp, "    \"%s\" \n", actors[4]);
+	fprintf(fp, "    \"%ls\", \n", actors[0]);
+	fprintf(fp, "    \"%ls\", \n", actors[1]);
+	fprintf(fp, "    \"%ls\", \n", actors[2]);
+	fprintf(fp, "    \"%ls\", \n", actors[3]);
+	fprintf(fp, "    \"%ls\" \n", actors[4]);
 	fprintf(fp, "  ],\n");
 	fprintf(fp, "  \"imdbRating\": %.1f\n", imdbRating);
 	fprintf(fp, "}\n");
@@ -261,7 +269,7 @@ void JsonParser::WriteJsonFile()
 
 void JsonParser::TestCode()
 {
-	int size;
+	size_t size;
 	char* doc = readFile("example.json", &size);
 	if (doc == nullptr)
 		return;
@@ -270,19 +278,21 @@ void JsonParser::TestCode()
 
 	ParseJson(doc, size, &json);
 
-	printf("Title: %s\n", GetString(&json, "Title"));        // 토큰에 저장된 문자열 출력(Title)
-	printf("Year: %d\n", (int)GetNumber(&json, "Year"));    // 토큰에 저장된 숫자 출력(Year)
-	printf("Runtime: %d\n", (int)GetNumber(&json, "Runtime")); // 토큰에 저장된 숫자 출력(Runtime)
-	printf("Genre: %s\n", GetString(&json, "Genre"));        // 토큰에 저장된 문자열 출력(Genre)
-	printf("Director: %s\n", GetString(&json, "Director"));     // 토큰에 저장된 문자열 출력(Director)
-	printf("Actors:\n");
-	int actors = GetArrayCount(&json, "Actors");
-	for (int i = 0; i < actors; i++)
+	std::cout << "Title: " << GetString(&json, "Title") << std::endl;
+	std::cout << "Year: " << (int)GetNumber(&json, "Year") << std::endl;
+	std::cout << "Runtime: " << (int)GetNumber(&json, "Runtime") << std::endl;
+	std::cout << "Genre: " << GetString(&json, "Genre") << std::endl;
+	std::cout << "Director: " << GetString(&json, "Director") << std::endl;
+	std::cout << "Actors: " << std::endl;
+	
+	size_t actors = GetArrayCount(&json, "Actors");
+	for (size_t i = 0; i < actors; i++)
 	{
-		printf("%s\n", GetArrayString(&json, "Actors", i));
+		std::cout << GetArrayString(&json, "Actors", i) << std::endl;
 	}
 	
-	printf("imdbRating: %f\n", GetNumber(&json, "imdbRating")); // imdbRating의 값 출력
+	std::cout << "imdbRating: " << GetNumber(&json, "imdbRating") << std::endl;
+	
 	FreeJson(&json);
 
 	delete doc;

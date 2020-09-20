@@ -29,12 +29,12 @@ typedef struct _JSON
 class JsonParser
 {
 public:
-	char* readFile(const char *fileName, int* readSize);
-	void ParseJson(char *doc, int size, JSON *json);
+	char* readFile(const char *fileName, size_t* readSize);
+	void ParseJson(char *doc, size_t size, JSON *json);
 	void FreeJson(JSON* json);
 	char* GetString(JSON* json, const char* key);
 	char* GetArrayString(JSON* json, const char* key, int index);
-	int GetArrayCount(JSON* json, const char* key);
+	size_t GetArrayCount(JSON* json, const char* key);
 	double GetNumber(JSON* json, const  char* key);
 	void WriteJsonFile();
 	void TestCode();
