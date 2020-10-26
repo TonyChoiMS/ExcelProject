@@ -1,4 +1,5 @@
-﻿#include <atomic>
+﻿#define _CRT_SECURE_NO_WARNINGS
+#include <atomic>
 #include <iostream>
 #include <array>
 #include <string>
@@ -24,6 +25,7 @@
 #include "ProducerConsumer.h"
 #include "JsonParser.h"
 #include <locale>
+
 #ifndef UTILS_H
 #define UTILS_H
 
@@ -1180,6 +1182,38 @@ void consum()
 }
 #include <string>
 
+int firstUniqChar(string s) {
+	std::unordered_map<char, int> hashmap;
+
+	for (int i = 0; i < s.size(); i++)
+	{
+		hashmap[s.at(i)] = hashmap[s.at(i)] + 1;
+	}
+
+	for (int i = 0; i < s.length(); i++)
+	{
+		if (hashmap[s.at(i)] == 1) return i;
+	}
+
+	return -1;
+}
+
+class NewUser
+{
+private:
+	std::string _job;
+	std::string _name;
+	int _age;
+public:
+
+	NewUser(std::string job, std::string name, int age) : _job(job), _name(name), _age(age) { }
+
+	void PrintInfo()
+	{
+		std::cout << "job : " << _job << ", name : " << _name << ", age : " << _age << std::endl;
+	}
+};
+
 int main()
 {
 	setlocale(LC_ALL, "ko_KR.utf8");
@@ -1202,14 +1236,40 @@ int main()
 		nums[i];
 	}
 
-	JsonParser js;
+//	JsonParser js;
 	//js.TestCode();
 
-	const wchar_t* ts = L"이건 그렇고 그런 얘기";
-	std::wcout << ts << std::endl;
-	
-	for (size_t i = 0; i < wcslen(ts); i++)
+	wchar_t ws1[20] = L"Hello, world!";
+	wchar_t ws2[20];
+
+	wprintf(L"%d\n", wcslen(ws1));
+
+	wcscat(ws1, L"123");
+	wprintf(L"%s\n", ws1);
+
+	wcscpy(ws2, ws1);
+	wprintf(L"%s\n", ws2);
+
+	wprintf(L"%d\n", wcscmp(ws1, ws2));
+
+	wchar_t *ptr = wcschr(ws1, L'o');
+	wprintf(L"%s\n", ptr);
+
+	ptr = wcschr(ws1, L'1');
+	wprintf(L"%s\n", ptr);
+
+	ptr = wcsstr(ws1, L"wor");
+	wprintf(L"%s\n", ptr);
+
+	wchar_t ws3[20] = L"THe Little Prince";
+	wchar_t *next;
+	ptr = wcstok(ws3, L" ", &next);
+
+	while (ptr != nullptr)
 	{
-		//if (wcscmp(ts[i], L' '))
+		wprintf(L"%s\n", ptr);
+		ptr = wcstok(nullptr, L" ", &next);
 	}
+
+	return 0;
 }
